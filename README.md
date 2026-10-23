@@ -1,3 +1,13 @@
+> **About this repository**
+> Data pipeline for REACH's Area of Knowledge (AoK) assessment in South Sudan: a monthly
+> key-informant assessment of settlement-level needs in hard-to-reach areas.
+> Originally built with Zack Arno; I took over development and running of the pipeline in
+> March 2020 as part of REACH South Sudan's GIS and data team, and ran it for the next two years.
+> This repository holds the pipeline as it stood at handover; later versions will be added.
+> My contributions include new-settlement validation, hexagon-grid maps for CCCM factsheets,
+> field-ready output tables, and fixes to county aggregation where grids crossed county borders.
+> No assessment data is included: `inputs/` is empty by design.
+
 -   [SOUTH SUDAN AOK DATA PROCESSING
     TUTORIAL](#south-sudan-aok-data-processing-tutorial)
 -   [SETUP](#setup)
