@@ -7,6 +7,8 @@
 > My contributions include new-settlement validation, hexagon-grid maps for CCCM factsheets,
 > field-ready output tables, and fixes to county aggregation where grids crossed county borders.
 > No assessment data is included: `inputs/` is empty by design.
+>
+> Status: historical (2020); not runnable as-is, because paths are machine-specific. Later versions to follow.
 
 -   [SOUTH SUDAN AOK DATA PROCESSING
     TUTORIAL](#south-sudan-aok-data-processing-tutorial)
@@ -26,7 +28,7 @@
     -   [Finding The Closest Point](#finding-the-closest-point)
     -   [Evaluating the closest point](#evaluating-the-closest-point)
     -   [NEW SETTLEMENT OUTPUTS](#new-settlement-outputs)
--   [AGGREATION/ANALYSIS](#aggreationanalysis)
+-   [AGGREGATION/ANALYSIS](#aggregationanalysis)
     -   [County Level Aggregation](#county-level-aggregation)
     -   [Hexagonal Aggregation](#hexagonal-aggregation)
 -   [NEXT STEPS](#next-steps)
@@ -34,16 +36,15 @@
 SOUTH SUDAN AOK DATA PROCESSING TUTORIAL
 ========================================
 
-This project was developed in January 2020 to automate South Sudan AOK
-data collation and analysis. This document serves as a tutorial for the
-the next Analyst. As this Git-hub will no longer be maintained after
-March 6 2020 it is recommended that this github be forked by the
+**Handover note from Zack Arno (March 2020):** This project was developed in January 2020 to automate South Sudan AOK
+data collation and analysis. This document serves as a tutorial for the next Analyst. As this GitHub will no longer be maintained after
+March 6 2020 it is recommended that this GitHub be forked by the
 responsible GIS/Data Unit Manager and the fork be maintained and
 updated.
 
-The actual process is mean to be implemented entirely through the script
+The actual process is meant to be implemented entirely through the script
 currently labeled **AOK\_cleaning\_aggregating.R** The markdown (rmd)
-file was simple made to create the tutorial and enhance documentation.
+file was simply made to create the tutorial and enhance documentation.
 
 SETUP
 =====
@@ -114,7 +115,7 @@ aok_raw<-read.csv("inputs/2020_02/2020_02_FEB_AOK_RAW_20200304_from_KOBO.csv", s
 Cleaning Logs
 -------------
 
-Once cleaning logs are revieved this chunk can be filled. First step is
+Once cleaning logs are reviewed this chunk can be filled. First step is
 to compile all of the logs into one. Next we can check and implement
 them using the two butteR tools commented out below.
 
@@ -159,7 +160,7 @@ Checking/Cross Referencing Settlement Data, Cleaning Logs and Assessment Data
 -----------------------------------------------------------------------------
 
 Compare new settlements to data after initial round of data cleaning
-implementation too make sure that AO has not already dealt wih the
+implementation to make sure that AO has not already dealt with the
 settlement in the cleaning log. Technically, if the settlement is
 addressed in the cleaning log they should have put “cleaning\_log” under
 the action column in the new settlement data set.
@@ -275,8 +276,7 @@ determine if the found closest settlement in the master list should take
 the place of the new settlement or not. The user has two options:
 
 1.  The less preferred option: can write this output to a csv and
-    manually assess the the table. Add a column called “action”. If the
-    the master settlement should replace the “new settlement” put 1,
+    manually assess the table. Add a column called “action”. If the master settlement should replace the “new settlement” put 1,
     otherwise 2. This file will then need to be read back into the
     script. Additionally, cleaning log entries will need to be added for
     any record in which a 1 was prescribed to action.
@@ -286,7 +286,7 @@ the place of the new settlement or not. The user has two options:
     the code in an R script a menu will prompt you through the
     interaction. Each line in the settlements\_best\_guess will be
     printed with the prompt: “1. fix with master, or 2. master is not
-    correct.” The user must press 1 or two based on there understanding
+    correct.” The user must press 1 or two based on their understanding
     of the names and distances provided.
 
 After cycling through each record, the resulting object is a list of two
@@ -307,7 +307,7 @@ new_settlement_evaluation$cleaning_log
 
 
 #IN THE ACTUAL SCRIPT IF WHERE THE CLEANING LOG IS CREATED IT WILL BE IMPLEMENTED HERE. HOWEVER SINCE THE CLEAING LOG CANNOT BE CREATED INTERACTIVELY WHEN THE DOCUMENT IS KNIT WE WILL NOT IMPLEMENT THE LOG
-if(nrow(new_settlement_evaluation$cleaning_log>0)){
+if(nrow(new_settlement_evaluation$cleaning_log) > 0){
 aok_clean3<-butteR::implement_cleaning_log(df = aok_clean2,df_uuid = "X_uuid",
                                            cl =new_settlement_evaluation$cleaning_log ,
                                            cl_change_type_col = "change_type",
@@ -391,7 +391,7 @@ new_setts_add_to_master<-new_settlement_evaluation$checked_setlements %>%
 master_new<-bind_rows(list(new_setts_add_to_master,master_settlement %>% mutate(DATE=dmy(DATE))))
 ```
 
-AGGREATION/ANALYSIS
+AGGREGATION/ANALYSIS
 ===================
 
 County Level Aggregation
@@ -408,7 +408,7 @@ recommended that this process be streamlined in the future with a new
 script. However, for the time being I have simply wrapped the entire
 aggregation script inside a function that will be run in this chunk
 (“aok\_aggregate\_by\_county”). This function is literally the same as
-the script that has been used previously for aggregating, but i have
+the script that has been used previously for aggregating, but I have
 added some useful prompts/warnings. For example, when the tool changes
 the function will print out which columns are new and have not been
 added to the aggregation script/function. These columns
@@ -477,7 +477,7 @@ Hexagonal Aggregation
 
 The monthly data should then be aggregated to the hexagonal grid for
 fact sheet maps. The grid has already been created and can simply be
-loaded. I think it might be best if this portion is eventually wrrapped
+loaded. I think it might be best if this portion is eventually wrapped
 into a function. The only things that will change here are potentially
 the questions to be analyzed which can be specified/modified as vector
 which can be used as one of the function arguments.
@@ -485,9 +485,9 @@ which can be used as one of the function arguments.
 It is important to note that all hexagons with \>= 2 Ki and \>= 2
 settlements are reported on.
 
-The chunk below does the following uses the master settlment list to add
+The chunk below does the following uses the master settlement list to add
 coordinates to the AOK data (which does not originally have coordinates)
-and performs a sptial join with the hex grid through the following
+and performs a spatial join with the hex grid through the following
 steps. 1. Read in hex grid (in UTM) 2. Convert the newly generated
 master settlement list to a spatial object, transform to UTM (same as
 hex grid), and strip out the important columns. 3. Add date class
@@ -574,7 +574,7 @@ analyzed_by_grid<-assessed_w_grid_w_composite %>%
   summarise_at(vars(vars_to_avg),mean, na.rm=T)
 ```
 
-Once analyzed you can write the aggreagted data to a csv or left\_join
+Once analyzed you can write the aggregated data to a csv or left\_join
 it to the original hex data and write it out as a polygon straight for
 mapping.
 
@@ -600,5 +600,5 @@ hex_grid_polygon_with_aggregated_data<-hex_grid %>% left_join(analyzed_by_grid_t
 NEXT STEPS
 ==========
 
-streamline the aok\_by\_county agggregation function so that it does not
-have to be continusly edited.
+streamline the aok\_by\_county aggregation function so that it does not
+have to be continuously edited.
